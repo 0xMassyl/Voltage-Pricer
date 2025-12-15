@@ -7,16 +7,17 @@ An industrial-grade pricing engine designed for B2B Power & Gas suppliers, bridg
 <!-- Preview Images -->
 
 <p align="center">
-  <img src="assets/PLOT1.png" width="90%" />
-<p align="center">
-  <img src="assets/PLOT3.png" width="90%%" />
+  <img src="assets/PLOT1.png" width="50%" />
+  <img src="assets/PLOT3.png" width="50%" />
+   />
 </p>
+
 <p align="center">
-  <img src="assets/PLOT4.png" width="90%%" />
+  <img src="assets/PLOT2.png" width="25%"/>
+  <img src="assets/PLOT4.png" width="75%"/>
 </p>
-<p align="center">
-  <img src="assets/PLOT2.png" width="90%%" />
-</p>
+
+
 ---
 
 

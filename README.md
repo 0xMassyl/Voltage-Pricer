@@ -251,34 +251,15 @@ py -m pip install pandas numpy scipy streamlit plotly xlsxwriter openpyxl xgboos
 ```bash
 py -m uvicorn src.engine.api_server:app --reload --port 8000
 py -m uvicorn src.engine.api_server:app --reload --port 8000
+```
+**UI**
 
-### UI
-
-bash
+```bash
 Copier le code
 py -m streamlit run app.py
+```
 
-Voltage-Pricer/
-├── src/
-│   ├── core/
-│   │   └── settings.py
-│   ├── domain/
-│   │   ├── pricing_models.py
-│   │   ├── risk_models.py
-│   │   ├── ppa_valuation.py
-│   │   └── ml_forecasting.py
-│   ├── ingestion/
-│   │   ├── curve_generator.py
-│   │   ├── market_data.py
-│   │   └── elia_client.py
-│   └── reporting/
-│       └── excel_export.py
-├── app.py
-├── pyproject.toml
-└── README.md
-
-
-7. Project Structure
+## 7. Project Structure
 
 Voltage-Pricer/
 ├── src/

@@ -128,9 +128,9 @@ The model predicts the **hourly price shape** based on temporal features.
 
 The Hourly Price Forward Curve aligns the ML-generated hourly shape with the market forward level.
 
-\[
-HPFC_t = \hat{P}_t^{ML} + \left(P_{Market}^{Forward} - \mu(\hat{P}^{ML})\right)
-\]
+$$
+HPFC_t = \hat{P}_t^{ML} + \left( P_{Market}^{Forward} - \mu\left(\hat{P}^{ML}\right) \right)
+$$
 
 Where:
 
@@ -144,14 +144,16 @@ Where:
 
 The profiling cost measures **shape risk**, i.e. the tendency to consume more electricity during structurally high-price hours.
 
-\[
-Cost_{Profiling} =
+$$
+Cost_{Profiling}
+=
 \left(
-\frac{\sum_{t=1}^{8760} (Load_t \times HPFC_t)}
+\frac{\sum_{t=1}^{8760} Load_t \times HPFC_t}
 {\sum_{t=1}^{8760} Load_t}
 \right)
-- \bar{P}_{Base}
-\]
+-
+\bar{P}_{Base}
+$$
 
 A positive value indicates a consumption profile more expensive than the flat baseload hedge.
 
@@ -161,9 +163,9 @@ A positive value indicates a consumption profile more expensive than the flat ba
 
 To cover **swing risk** (volume deviation from forecast), a simplified option-like premium is applied.
 
-\[
+$$
 Premium = (Base + 5 \cdot \sigma_{spot}) \times SizeFactor(V)
-\]
+$$
 
 Where:
 
@@ -176,9 +178,9 @@ Where:
 
 For renewable PPAs (Solar / Wind), the fixed price is discounted to reflect capture effects.
 
-\[
+$$
 P_{PPA} = (P_{Base} \times CR) - RiskBuffer
-\]
+$$
 
 This accounts for production/price correlation and cannibalization during high renewable output periods.
 
@@ -241,16 +243,16 @@ git clone https://github.com/YOUR_USERNAME/Voltage-Pricer.git
 cd Voltage-Pricer
 
 py -m pip install pandas numpy scipy streamlit plotly xlsxwriter openpyxl xgboost scikit-learn requests
+```
 
 ### Launch
 
-#### API
 
 ```bash
 py -m uvicorn src.engine.api_server:app --reload --port 8000
 ```
 
-#### UI
+### UI
 
 ```bash
 py -m streamlit run app.py
@@ -259,21 +261,22 @@ py -m streamlit run app.py
 
 ## 7. Project Structure
 
-Voltage-Pricer/
-├── src/
-│   ├── core/
-│   │   └── settings.py
-│   ├── domain/
-│   │   ├── pricing_models.py
-│   │   ├── risk_models.py
-│   │   ├── ppa_valuation.py
-│   │   └── ml_forecasting.py
-│   ├── ingestion/
-│   │   ├── curve_generator.py
-│   │   ├── market_data.py
-│   │   └── elia_client.py
-│   └── reporting/
-│       └── excel_export.py
-├── app.py
-├── pyproject.toml
-└── README.md
+```text
+Voltage-Pricer/                     # Project root
+├── src/                            # Application source code
+│   ├── core/                       # Global configuration
+│   │   └── settings.py             # Market rules & constants
+│   ├── domain/                     # Business logic layer
+│   │   ├── pricing_models.py       # Sourcing & pricing logic
+│   │   ├── risk_models.py          # Profiling & volume risk
+│   │   ├── ppa_valuation.py        # Renewable PPA pricing
+│   │   └── ml_forecasting.py       # XGBoost forecasting engine
+│   ├── ingestion/                  # Data ingestion layer
+│   │   ├── curve_generator.py      # Load profile generation
+│   │   ├── market_data.py          # Market price feeds
+│   │   └── elia_client.py          # TSO API connector
+│   └── reporting/                  # Output & reporting
+│       └── excel_export.py         # Excel quote generation
+├── app.py                          # Streamlit UI entrypoint
+├── pyproject.toml                  # Dependency management
+└── README.md                       # Project documentation

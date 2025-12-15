@@ -146,13 +146,7 @@ The profiling cost measures **shape risk**, i.e. the tendency to consume more el
 
 $$
 Cost_{Profiling}
-=
-\left(
-\frac{\sum_{t=1}^{8760} Load_t \times HPFC_t}
-{\sum_{t=1}^{8760} Load_t}
-\right)
--
-\bar{P}_{Base}
+=\left(\frac{\sum_{t=1}^{8760} Load_t \times HPFC_t}{\sum_{t=1}^{8760} Load_t}\right)-\bar{P}_{Base}
 $$
 
 A positive value indicates a consumption profile more expensive than the flat baseload hedge.

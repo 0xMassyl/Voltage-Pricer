@@ -157,6 +157,7 @@ $$
 
 A positive value indicates a consumption profile more expensive than the flat baseload hedge.
 
+
 ---
 
 ### 3.4 Volume Risk Premium

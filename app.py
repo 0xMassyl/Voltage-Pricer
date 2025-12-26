@@ -434,3 +434,5 @@ if run_btn:
 else:
     # État initial
     st.markdown("<div style='text-align: center; color: #333; margin-top: 50px; font-family:\"Segoe UI\", sans-serif;'>WAITING FOR INPUT...</div>", unsafe_allow_html=True)
+    
+    

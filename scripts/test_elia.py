@@ -73,3 +73,5 @@ if __name__ == "__main__":
     # Entry point for manual execution
     # Allows running the test without a test framework
     test_elia_connection()
+
+

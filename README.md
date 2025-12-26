@@ -21,7 +21,6 @@ An industrial-grade pricing engine designed for B2B Power & Gas suppliers, bridg
 
 
 
-
 ## Table of Contents
 
 - Executive Summary  

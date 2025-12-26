@@ -59,3 +59,4 @@ def price_renewable_ppa(technology: str, baseload_price: float) -> PPAResult:
         capture_rate=round(capture_rate * 100, 1),
         cannibalization_impact=round(cannibalization, 2),
     )
+

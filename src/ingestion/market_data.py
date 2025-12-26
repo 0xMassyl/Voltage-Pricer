@@ -49,6 +49,8 @@ class MarketDataManager:
             )
             spot_ref = 95.50
 
+
+
         # 2. Forward price construction
         # Assumption: forward prices mean-revert toward a long-term equilibrium
         # Spot level influences the forward, but does not fully dictate it

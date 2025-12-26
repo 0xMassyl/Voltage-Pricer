@@ -90,21 +90,33 @@ class EliaDataConnector:
         }
 
         try:
+                # Send an HTTP GET request to the ELIA Open Data API
+                # - url: dataset endpoint
+                # - params: query parameters (ordering, limit, timezone)
+                # - timeout: prevents hanging indefinitely if the API is unresponsive
             response = requests.get(url, params=params, timeout=15)
             response.raise_for_status()
 
+            
             data = response.json()
+            # If the API returns no data, return an empty DataFrame
             if not data:
                 return pd.DataFrame()
-
+            
+            # Convert the JSON payload into a pandas DataFrame
             df = pd.DataFrame(data)
 
             # Timezone normalization and indexing
             if date_col in df.columns:
+                
+                # Convert the datetime column to pandas datetime format
+                # - utc=True ensures timestamps are interpreted as UTC
+                # - tz_convert converts them to the Europe/Brussels timezone
                 df[date_col] = (
                     pd.to_datetime(df[date_col], utc=True)
                     .dt.tz_convert("Europe/Brussels")
                 )
+                #Set the datetime column as index and sort chronologically to ensure consistent time-series operations
                 df = df.set_index(date_col).sort_index()
 
             return df
@@ -117,6 +129,8 @@ class EliaDataConnector:
     # ------------------------------------------------------------------
     # Public API: Load
     # ------------------------------------------------------------------
+    
+    
     def fetch_real_load_curve(self, days: int = 14) -> pd.Series:
         """
         Retrieves Belgian grid load from dataset 'ods003'.
@@ -127,9 +141,16 @@ class EliaDataConnector:
         """
         print(f"[Elia] Downloading load data (ods003, last {days} days)...")
 
-        df = self._fetch_from_api("ods003", days, date_col="datetime")
 
-        # Flexible column detection (API schema is not stable)
+         # Fetch raw data from the ELIA API
+        df = self._fetch_from_api("ods003", days, date_col="datetime")
+        
+        
+        
+        # ------------------------------------------------------------------
+        ## Flexible column detection (API schema is not stable)
+        # ------------------------------------------------------------------
+        # The column name containing the load values may vary depending on the API version or dataset update
         target_col: Optional[str] = None
         for col in ["eliagridload", "measured", "eliagridload", "load"]:
             if col in df.columns:
@@ -143,7 +164,9 @@ class EliaDataConnector:
             )
             return self._generate_fallback_load(days)
 
-        # Convert to hourly time series
+        # Resample the load values to an hourly frequency,
+        # compute the mean when multiple records exist,
+        # interpolate missing values, and backfill remaining gaps
         hourly_load = (
             df[target_col]
             .resample("h")
@@ -151,7 +174,7 @@ class EliaDataConnector:
             .interpolate()
             .bfill()
         )
-
+        # Return a clean, continuous hourly load time series
         return hourly_load
 
     # ------------------------------------------------------------------
@@ -163,8 +186,14 @@ class EliaDataConnector:
         """
         print(f"[Elia] Downloading spot prices (ods047, last {days} days)...")
 
+       
+         # Fetch raw spot price data from the ELIA API
         df = self._fetch_from_api("ods047", days, date_col="datetime")
 
+        # ------------------------------------------------------------------
+        # Robust price column detection
+        # ------------------------------------------------------------------
+        
         # Normalize column names for robust matching
         df.columns = [c.lower() for c in df.columns]
 
@@ -175,7 +204,7 @@ class EliaDataConnector:
             if any(candidate in col for candidate in candidates):
                 price_col = col
                 break
-
+  # If no valid data or price column is found, fall back to synthetic prices
         if df.empty or price_col is None:
             cols_found = df.columns.tolist() if not df.empty else "None"
             print(
@@ -183,7 +212,13 @@ class EliaDataConnector:
             )
             return self._generate_fallback_prices(days)
 
-        # Convert to clean hourly price series
+    # ------------------------------------------------------------------
+    # Hourly time-series normalization
+    # ------------------------------------------------------------------
+    # Resample prices to an hourly frequency,
+    # average multiple records per hour,
+    # interpolate missing values, and backfill remaining gaps
+    
         hourly_price = (
             df[price_col]
             .resample("h")
